@@ -45,6 +45,32 @@ Engineered with **Next.js 16 App Router (Turbopack)**, **Tailwind CSS v4**, **Au
 
 ---
 
+## 🏛️ System Architecture
+
+For a comprehensive breakdown with sequence diagrams and lifecycle specifications, see [ARCHITECTURE.md](./ARCHITECTURE.md).
+
+```mermaid
+flowchart TD
+    Client["Client Browser\n(Public Visitor / Admin @Shivam9621)"]
+    Proxy["Next.js Proxy Middleware\n(Rate Limiter: 60 req/min + Admin Auth Gate)"]
+    RSC["React Server Components (PPR)\n(TopBar, Hero, Experience, Projects, Skills, Coursework)"]
+    AdminIsland["Admin Dynamic Island\n(Slide-Over Drawers + @dnd-kit Canvas)"]
+    APIs["Admin API Handlers\n(/api/admin/* & /api/auth/*)"]
+    DAL["Data Access Layer (DAL)\n(Zod Schemas + Persistence Engine)"]
+    MongoDB[("MongoDB Atlas")]
+    MemoryDB[("In-Memory Local Fallback\n(Auto-Seeded Zero-Config)")]
+
+    Client -->|HTTP GET /| Proxy
+    Proxy --> RSC
+    Client -.->|Admin Session| AdminIsland
+    AdminIsland -->|Mutations / Reorder| APIs
+    APIs --> DAL
+    DAL -->|Remote URI| MongoDB
+    DAL -->|Offline Fallback| MemoryDB
+```
+
+---
+
 ## 🚀 Tech Stack
 
 | Layer | Technology |
