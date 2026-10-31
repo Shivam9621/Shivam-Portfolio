@@ -1,30 +1,30 @@
 import { z } from "zod";
 
-const urlOrEmpty = z.string().url().or(z.literal("")).optional();
+const stringOrEmpty = z.string().optional().or(z.literal(""));
 
 export const LinkSchema = z.object({
   id: z.string(),
   label: z.string().min(1),
-  url: z.string().url().or(z.literal("")),
+  url: z.string().default(""),
   kind: z.enum(["github", "linkedin", "leetcode", "email", "other"]),
 });
 export type Link = z.infer<typeof LinkSchema>;
 
 export const ProjectSchema = z.object({
-  id: z.string(), // nanoid
-  slug: z.string(),
-  title: z.string().min(1).max(80),
-  kind: z.enum(["featured", "standard"]),
-  summary: z.string().max(400), // 1-2 sentences, what it does
-  detail: z.string().max(1200).optional(), // how it works / result
-  metrics: z.array(z.string()).max(4), // e.g. "0.95+ faithfulness (RAGAS)"
-  stack: z.array(z.string()).max(10),
-  repoUrl: urlOrEmpty,
-  liveUrl: urlOrEmpty,
-  imageUrl: urlOrEmpty,
+  id: z.string(),
+  slug: z.string().optional(),
+  title: z.string().min(1, "Title is required").max(120),
+  kind: z.enum(["featured", "standard"]).default("standard"),
+  summary: z.string().max(2000).default(""),
+  detail: z.string().max(5000).optional(),
+  metrics: z.array(z.string()).default([]),
+  stack: z.array(z.string()).default([]),
+  repoUrl: stringOrEmpty,
+  liveUrl: stringOrEmpty,
+  imageUrl: stringOrEmpty,
   year: z.string().optional(),
-  visible: z.boolean().default(true), // hide without deleting
-  order: z.number(),
+  visible: z.boolean().default(true),
+  order: z.number().default(999),
 });
 export type Project = z.infer<typeof ProjectSchema>;
 
@@ -35,10 +35,10 @@ export const ExperienceSchema = z.object({
   team: z.string().optional(),
   location: z.string().optional(),
   start: z.string(),
-  end: z.string(), // "2025-06", "2025-08"
-  bullets: z.array(z.string()).max(8),
+  end: z.string(),
+  bullets: z.array(z.string()).default([]),
   visible: z.boolean().default(true),
-  order: z.number(),
+  order: z.number().default(999),
 });
 export type Experience = z.infer<typeof ExperienceSchema>;
 
@@ -56,7 +56,7 @@ export type Education = z.infer<typeof EducationSchema>;
 export const SkillGroupSchema = z.object({
   id: z.string(),
   group: z.string(),
-  items: z.array(z.string()),
+  items: z.array(z.string()).default([]),
 });
 export type SkillGroup = z.infer<typeof SkillGroupSchema>;
 
@@ -64,7 +64,7 @@ export const AchievementSchema = z.object({
   id: z.string(),
   text: z.string(),
   visible: z.boolean().default(true),
-  order: z.number(),
+  order: z.number().default(999),
 });
 export type Achievement = z.infer<typeof AchievementSchema>;
 
@@ -72,10 +72,10 @@ export const ProfileSchema = z.object({
   name: z.string(),
   headline: z.string(),
   intro: z.string(),
-  email: z.string().email(),
+  email: z.string(),
   location: z.string().optional(),
-  avatarUrl: urlOrEmpty,
-  resumeUrl: urlOrEmpty,
+  avatarUrl: stringOrEmpty,
+  resumeUrl: stringOrEmpty,
 });
 export type Profile = z.infer<typeof ProfileSchema>;
 

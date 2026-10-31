@@ -85,7 +85,7 @@ export function ProjectDrawerForm({
       .filter(Boolean);
 
     const payload = {
-      ...(project?.id ? { id: project.id } : {}),
+      id: project?.id || `proj-${Date.now()}`,
       title: formData.title.trim(),
       kind: formData.kind,
       year: formData.year.trim() || undefined,

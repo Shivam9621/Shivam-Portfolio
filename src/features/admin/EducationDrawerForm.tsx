@@ -96,7 +96,10 @@ export function EducationDrawerForm({
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Failed to save education");
+        let msg = "Failed to save education";
+        if (typeof data.error === "string") msg = data.error;
+        else if (Array.isArray(data.error)) msg = data.error[0]?.message || msg;
+        throw new Error(msg);
       }
 
       const resData = await res.json();

@@ -87,7 +87,10 @@ export function SkillDrawerForm({
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Failed to save skill group");
+        let msg = "Failed to save skill group";
+        if (typeof data.error === "string") msg = data.error;
+        else if (Array.isArray(data.error)) msg = data.error[0]?.message || msg;
+        throw new Error(msg);
       }
 
       onSaved(data.skill || payload);
