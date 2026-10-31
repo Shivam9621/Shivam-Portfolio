@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { connection } from "next/server";
 import dynamic from "next/dynamic";
 import { getPortfolioData } from "@/features/portfolio/server/data";
 import { getAdminSession } from "@/features/admin/session";
@@ -18,6 +19,7 @@ const DynamicAdminBar = dynamic(() =>
 );
 
 async function AdminBarServer() {
+  await connection();
   const session = await getAdminSession();
   if (!session?.isAdmin) return null;
   return (

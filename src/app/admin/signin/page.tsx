@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { signIn } from "@/lib/auth";
 import { getAdminSession } from "@/features/admin/session";
 import { redirect } from "next/navigation";
@@ -6,6 +7,7 @@ import { GithubIcon } from "@/features/portfolio/components/Icons";
 import { ShieldAlert, Lock, ArrowLeft, Zap, ShieldCheck } from "lucide-react";
 
 async function SignInForm({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  await connection();
   const session = await getAdminSession();
   if (session?.isAdmin) {
     redirect("/");
