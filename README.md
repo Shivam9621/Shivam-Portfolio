@@ -152,6 +152,37 @@ npm run build
 npm run start
 ```
 
+### Deploy to Google Cloud (2 Options)
+
+#### Option 1: Firebase App Hosting (Recommended Google Next.js SSR Platform)
+1. Go to the [Firebase Console](https://console.firebase.google.com/).
+2. Select or create your Firebase project on the **Blaze** plan.
+3. In the sidebar, navigate to **Build** &rarr; **App Hosting**.
+4. Click **Get Started** and link your GitHub repository:
+   - Repository: `Shivam9621/Shivam-Portfolio`
+   - Branch: `main`
+   - Root directory: `/`
+5. Under Environment Variables & Secrets, add:
+   - `AUTH_SECRET`: Your generated Auth.js secret
+   - `ADMIN_GITHUB_LOGIN`: `Shivam9621`
+   - `MONGODB_URI`: (Optional) Your MongoDB Atlas connection string
+6. Click **Deploy**. Firebase will build your Next.js App Router project and allocate serverless SSR instances automatically with managed SSL.
+
+#### Option 2: Google Cloud Run (Containerized Microservice)
+This repository includes a multi-stage production [`Dockerfile`](./Dockerfile) using Next.js standalone mode.
+```bash
+# 1. Build & submit container image to Google Artifact Registry
+gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/shivam-portfolio
+
+# 2. Deploy to Cloud Run with auto-scaling (0-2 instances)
+gcloud run deploy shivam-portfolio \
+  --image gcr.io/YOUR_PROJECT_ID/shivam-portfolio \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars "ADMIN_GITHUB_LOGIN=Shivam9621,AUTH_SECRET=your_auth_secret_here"
+```
+
 ### Deploy to Vercel
 
 1. Push your repository to GitHub.
